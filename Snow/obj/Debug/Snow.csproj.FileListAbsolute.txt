@@ -1,0 +1,6 @@
+c:\users\andrey\documents\visual studio 2013\Projects\Snow\Snow\bin\Debug\Snow.exe.config
+c:\users\andrey\documents\visual studio 2013\Projects\Snow\Snow\bin\Debug\Snow.exe
+c:\users\andrey\documents\visual studio 2013\Projects\Snow\Snow\bin\Debug\Snow.pdb
+c:\users\andrey\documents\visual studio 2013\Projects\Snow\Snow\obj\Debug\Snow.csprojResolveAssemblyReference.cache
+c:\users\andrey\documents\visual studio 2013\Projects\Snow\Snow\obj\Debug\Snow.exe
+c:\users\andrey\documents\visual studio 2013\Projects\Snow\Snow\obj\Debug\Snow.pdb
