@@ -12,28 +12,50 @@ namespace Snow {
 
 		public void Randomize() { }
 	}
+    /// <summary>
+    /// We pretend each snowflake is a sphere.
+    /// </summary>
 	class SnowFlake {
-		static char[] models = new char[] { '.', ',', '*', '+', 'o', '¤', '#', '%'};
+        public bool removeMe { get; set; }
+        
+        Vec2 Pos;
+        Vec2 Vel;
+
+        //In Kilograms
+        double Mass;
+        //In Centimeters
+        double Radius;
+
+        public SnowFlake(Vec2 startPos, double startMass, double startRadius) {
+            Mass = startMass;
+            Radius = startRadius;
 		
-		int posX, posY;
-		int velX, velY;
-		int size = -1;
-		int stepAccum = 0;
-
-		public bool removeMe { get; set; }
-
-		public SnowFlake() {
-			size = SnowController.rand.Next(models.Count());
 			removeMe = false;
 
-			posX = SnowController.rand.Next(Console.WindowWidth);
-			posY = 0;
-			velX = 0;// SnowController.rand.Next(-2, 2);
-			velY = SnowController.rand.Next(1, 2);
+            Pos = startPos;
 		}
 
-		public void DoTick(Wind theWind) {
-			if (posY >= Console.WindowHeight) { removeMe = true; return; }
+        public void DoTick(Wind theWind) {
+            //1) Get gravity force
+            //2) Get Air-Risistance force
+            //3) Get wind Force
+            //4) Add all together and get vel
+            //5) Add vell (do check?)
+
+            Vec2 gravForce = Mass * new Vec2(0, -9.8);
+
+            //Drag calc from (http://www.grc.nasa.gov/WWW/k-12/airplane/dragsphere.html)
+            // Drag = Cd * .5 * rho * V^2 * A
+            // Cd: drag coeficent (0.47 for sphere)
+            // V: velocity of sphere
+            // A: reference area
+            // rho: air density
+            // Avarage air density: 1.2041 kg/m^3
+
+            double AirDensity = 1.2041;
+            double DragCoeffcient = 0.47;
+            Vec2 AirDrag = DragCoeffcient * 0.5 * AirDensity * (Vel * Vel) * (Math.PI * (Radius * Radius));
+            /*if (posY >= Console.WindowHeight) { removeMe = true; return; }
 
 
 
@@ -49,13 +71,13 @@ namespace Snow {
 					posX = Console.WindowWidth + posX;
 				else if (posX >= Console.WindowWidth)
 					posX = posX % Console.WindowWidth;
-			}
-		}
+			}*/
+        }
 
-		public void DoDraw() {
-			Console.CursorLeft = posX;
-			Console.CursorTop = posY;
-			Console.Write(models[size]);
+        public void DoDraw() {
+			//Console.CursorLeft = posX;
+			//Console.CursorTop = posY;
+			//Console.Write(models[size]);
 		}
 
 	}
@@ -89,7 +111,6 @@ namespace Snow {
 		public void Run() {
 			snowTick.Start();
 			snowDraw.Start();
-			//Console.WriteLine(". , * + o ¤ # %");
 			while (Console.ReadKey().Key != ConsoleKey.Q) { }
 		}
 
