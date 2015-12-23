@@ -19,23 +19,24 @@ namespace Snow {
         }
 
         public void Draw() {
-            return;
+            //return;
             Random gen = new Random();
 
             int stepSize = maxPileHight / maxRowsUsed;
             lock (theLock) {
-                for (int posX = 0; posX < Console.WindowWidth- 1; posX++) {
+                for (int posX = 0; posX < Console.WindowWidth - 1; posX++) {
 
                     //TODO: make generic based on upper limit.
 
                     int pileSize = piles[posX] / maxRowsUsed;
-                    int bottom = Console.WindowHeight;
-                    int upperLimit = Console.WindowHeight - pileSize;
+                    int bottom = Console.WindowHeight - 1;
+                    int upperLimit = (Console.WindowHeight - 1) - pileSize;
                     for (int i = bottom; i >= upperLimit; i--) {
-                        Console.SetCursorPosition(posX, i);
+                        //Console.SetCursorPosition(posX, i);
 
                         if (i == upperLimit) {
-                            Console.Write("-");
+                            Printer.PrintCharAtX('-', posX, i);
+                            //Console.Write("-");
                             /*if (posX == 0) {
                                 if (piles[posX + 1] > pile)
 
@@ -45,7 +46,9 @@ namespace Snow {
 
                             }*/
                         } else {
-                            Console.Write(".");
+                            Printer.PrintCharAtX('.', posX, i);
+
+                            //Console.Write(".");
                         }
 
                     }
