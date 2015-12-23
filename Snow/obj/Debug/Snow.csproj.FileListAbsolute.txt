@@ -4,3 +4,9 @@ c:\users\andrey\documents\visual studio 2013\Projects\Snow\Snow\bin\Debug\Snow.p
 c:\users\andrey\documents\visual studio 2013\Projects\Snow\Snow\obj\Debug\Snow.csprojResolveAssemblyReference.cache
 c:\users\andrey\documents\visual studio 2013\Projects\Snow\Snow\obj\Debug\Snow.exe
 c:\users\andrey\documents\visual studio 2013\Projects\Snow\Snow\obj\Debug\Snow.pdb
+C:\Users\byelo\Documents\Code\Snow\Snow\bin\Debug\Snow.exe.config
+C:\Users\byelo\Documents\Code\Snow\Snow\bin\Debug\Snow.exe
+C:\Users\byelo\Documents\Code\Snow\Snow\bin\Debug\Snow.pdb
+C:\Users\byelo\Documents\Code\Snow\Snow\obj\Debug\Snow.csprojResolveAssemblyReference.cache
+C:\Users\byelo\Documents\Code\Snow\Snow\obj\Debug\Snow.exe
+C:\Users\byelo\Documents\Code\Snow\Snow\obj\Debug\Snow.pdb

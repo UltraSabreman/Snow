@@ -6,117 +6,79 @@ using System.Threading.Tasks;
 using System.Timers;
 
 namespace Snow {
-	class Wind {
-		public int VelX { get; set; }
-		public int VelY { get; set; }
-
-		public void Randomize() { }
-	}
 	class SnowFlake {
-		static char[] models = new char[] { '.', ',', '*', '+', 'o', '¤', '#', '%'};
+        static Random randGen = new Random();
+        static char[] models = new char[] { '.', ',', '*', '+', 'o', '¤', '#', '%'};
+        static double flakeDragCoef = 100;
+        static double maxVelX = 1;
 		
-		int posX, posY;
-		int velX, velY;
+		public double posX, posY;
+        double velX, velY;
 		int size = -1;
-		int stepAccum = 0;
+        int density = -1;
+        int level = 0;
 
 		public bool removeMe { get; set; }
 
 		public SnowFlake() {
-			size = SnowController.rand.Next(models.Count());
+            int maxSize = models.Count();
+
+            size = randGen.Next(maxSize);
+            density = maxSize - size;
+            level = randGen.Next(-1, 1);
 			removeMe = false;
 
-			posX = SnowController.rand.Next(Console.WindowWidth);
-			posY = 0;
-			velX = 0;// SnowController.rand.Next(-2, 2);
-			velY = SnowController.rand.Next(1, 2);
+			posX = randGen.Next(Console.WindowWidth);
+			posY = -5;
+            velX = 0;// = SnowController.rand.Next(-1, 1);
+            velY = density * 0.01;
 		}
 
-		public void DoTick(Wind theWind) {
+		public void DoTick(double WindX) {
 			if (posY >= Console.WindowHeight) { removeMe = true; return; }
 
+            if (WindX == 0) {
+                velX -= (velX / flakeDragCoef);
+            } else {
+                if (velX > -(maxVelX / size) && velX < (maxVelX / size))
+                    velX += (WindX / (density / 2)) / 300;
+            }
 
+			int rem = Console.WindowHeight - (int)posY;
+			posY += (velY > rem ? rem : velY);
 
-			int maxSize = models.Count();
-			stepAccum += (maxSize - size);
-			if (stepAccum >= 80) {
-				int rem = Console.WindowHeight - posY;
-				posY += (velY > rem ? rem : velY);
-				stepAccum = 0;
-
-				posX += velX;
-				if (posX < 0)
-					posX = Console.WindowWidth + posX;
-				else if (posX >= Console.WindowWidth)
-					posX = posX % Console.WindowWidth;
-			}
+			posX += velX;
+			if (posX < 0)
+				posX = Console.WindowWidth + (int)posX;
+			else if (posX >= Console.WindowWidth)
+				posX = (int)posX % Console.WindowWidth;
 		}
 
 		public void DoDraw() {
-			Console.CursorLeft = posX;
-			Console.CursorTop = posY;
-			Console.Write(models[size]);
+            if (posY < 0) return;
+            try {
+                switch (level) {
+                    case -1:
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                        break;
+                    case 0:
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        break;
+                    case 1:
+                        Console.ForegroundColor = ConsoleColor.White;
+                        break;
+                    default:
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        break;
+                }
+
+                //Console.CursorLeft = (int)posX;
+                //Console.CursorTop = (int)posY;
+                //Console.Write(models[size]);
+                Printer.PrintCharAtX(models[size], (int)posX, (int)posY);
+            } catch (Exception) { }
 		}
 
 	}
 
-	class SnowController {
-		static public Random rand = new Random();
-		static public object locker = new object();
-
-		List<int> SnowLayer = new List<int>();
-		List<SnowFlake> SnowFlakes = new List<SnowFlake>();
-		Timer snowTick = new Timer();
-		Timer snowDraw = new Timer();
-
-		Wind theWind = new Wind();
-
-		int maxFlakes = 10;
-
-		public void Init() {
-			SnowLayer.Capacity = Console.WindowWidth;
-			snowTick.Interval = 10;
-			snowTick.Elapsed += SnowTicker;
-
-			snowDraw.Interval = 100;
-			snowDraw.Elapsed += SnowDrawer;
-
-			theWind.VelX = 2;
-
-			Console.CursorVisible = false;
-		}
-
-		public void Run() {
-			snowTick.Start();
-			snowDraw.Start();
-			//Console.WriteLine(". , * + o ¤ # %");
-			while (Console.ReadKey().Key != ConsoleKey.Q) { }
-		}
-
-
-		private void SnowDrawer(object o, EventArgs e) {
-			Console.Clear();
-			lock (locker) {
-				SnowFlakes.ForEach(X => X.DoDraw());
-			}
-
-		}
-		private void SnowTicker(object o, EventArgs e) {
-			lock (locker) {
-				SnowFlakes.RemoveAll(X => X.removeMe);
-				
-				if (SnowFlakes.Count != maxFlakes)
-					SnowFlakes.Add(SpawnFlake());
-
-				SnowFlakes.ForEach(X => X.DoTick(theWind));
-			}
-		}
-
-		private SnowFlake SpawnFlake() {
-			SnowFlake temp = new SnowFlake();
-
-
-			return temp;
-		}
-	}
 }
